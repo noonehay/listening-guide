@@ -72,6 +72,10 @@
 .lg th { color: var(--lg-muted); font-weight: var(--cds-font-weight-medium); }
 .lg td.lg-num { font-variant-numeric: tabular-nums; color: var(--lg-muted); }
 .lg td.lg-hot { color: var(--lg-orange); }
+.lg-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.lg-top h1 { margin: 0 !important; }
+.lg-how { color: var(--lg-mustard); border: 1.5px solid var(--lg-mustard); border-radius: 999px; padding: 6px 14px; text-decoration: none; font-weight: 600; font-size: var(--cds-font-size-caption); white-space: nowrap; }
+.lg-how:hover { background: var(--lg-mustard); color: var(--lg-bg); }
 [data-dash-source-state=refreshing] { opacity: .5; }
 :root { --font-anthropic-sans: system-ui, -apple-system, 'Segoe UI', sans-serif; --cds-font-size-caption: 12.5px; --cds-font-size-body: 14.5px; --cds-font-size-heading: 18px; --cds-font-size-title: 30px; --cds-font-weight-medium: 600;
   --cds-gap-xs: 4px; --cds-gap-sm: 8px; --cds-gap-md: 14px; --cds-gap-lg: 20px; --cds-gap-xl: 28px; --cds-pad-md: 10px; --cds-pad-lg: 18px; --cds-pad-xl: 28px; --cds-radius: 10px; }
@@ -83,7 +87,7 @@ body { padding: 16px; }
 
 <div class="lg" data-read lang="en-AU">
   <header class="lg-head" id="top">
-    <h1>Hayden's listening guide</h1>
+    <div class="lg-top"><h1>Hayden's listening guide</h1><a class="lg-how" href="how.html">How this works</a></div>
     <p>Week of 14 November 2026 · four playlists, 40 songs</p>
     <p class="lg-take"><b data-draw="overall" data-source="share" data-where="playlist=All" data-field="pct">—</b> of this week's songs came out this year.</p>
     <p class="lg-strip"><span><b data-draw="totalmin" data-source="share" data-where="playlist=All" data-field="minutes">—</b> minutes of music</span><span><b data-draw="totalgenres" data-source="share" data-where="playlist=All" data-field="genres">—</b> genres</span><span><b data-draw="totalcountries" data-source="share" data-where="playlist=All" data-field="countries">—</b> countries</span></p>
