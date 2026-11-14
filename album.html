@@ -22,7 +22,13 @@ body { font-family: var(--font); font-size: 15.5px; line-height: 1.55; padding: 
 a.hl { color: var(--fg); text-decoration: none; background: var(--hl-m); padding: 0 3px; font-weight: 600; }
 a.hl:hover { background: rgba(209, 189, 25, .35); }
 .eyebrow { font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
-.hero { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: clamp(20px, 4vw, 36px); display: flex; flex-direction: column; gap: 14px; }
+.hero { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: clamp(20px, 4vw, 36px); display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 28px; align-items: start; }
+.hero .info { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.cover { width: 100%; aspect-ratio: 1; border-radius: 10px; object-fit: cover; background: #1c3d32; box-shadow: 0 14px 34px rgba(0, 0, 0, .45); display: block; max-width: 100%; }
+@media (max-width: 700px) { .hero { grid-template-columns: minmax(0, 1fr); } .cover { max-width: 320px; } }
+
+.hero.noart { grid-template-columns: minmax(0, 1fr); }
+td.art { padding: 6px 10px; width: 44px; } td.art img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; display: block; background: #1c3d32; }
 .hero h1 { margin: 0; font-size: clamp(34px, 7vw, 60px); line-height: 1.15; font-weight: 700; text-wrap: balance; }
 .hero h1 span { background: var(--hl-o); padding: 0 6px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 .artist { margin: 0; font-size: clamp(20px, 3.4vw, 26px); font-weight: 700; color: var(--mustard); }
@@ -44,21 +50,24 @@ a:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 </style>
 </head>
 <body>
-<script>window.AOTW = [{"date": "2026-11-14", "artist": "Sugar", "album": "Copper Blue", "year": 1992, "genre": "Alternative rock", "id": 712, "blurb": "Bob Mould's first record with Sugar, his band after Hüsker Dü: loud, fuzzy guitars wrapped around huge pop hooks. NME made it their album of the year in 1992. Start with \"Helpless\" and \"If I Can't Change Your Mind\".", "url": "https://open.spotify.com/album/7ndxJRCMbUDbuUTEuiG23u"}];</script>
+<script>window.AOTW = [{"date": "2026-11-14", "artist": "Sugar", "album": "Copper Blue", "year": 1992, "genre": "Alternative rock", "id": 712, "blurb": "Bob Mould's first record with Sugar, his band after Hüsker Dü: loud, fuzzy guitars wrapped around huge pop hooks. NME made it their album of the year in 1992. Start with \"Helpless\" and \"If I Can't Change Your Mind\".", "url": "https://open.spotify.com/album/7ndxJRCMbUDbuUTEuiG23u", "art": "https://i.scdn.co/image/ab67616d0000b27392feb7c3b88219c8f576419e", "art_sm": "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e0292feb7c3b88219c8f576419e"}];</script>
 <div class="wrap">
   <p style="margin:0"><a class="hl" href="./">← This week's guide</a></p>
   <section class="hero" aria-labelledby="t">
+    <img class="cover" id="cover" alt="" width="280" height="280" hidden>
+    <div class="info">
     <div class="eyebrow" id="when">Album of the week</div>
     <h1 id="t"><span id="album"></span></h1>
     <p class="artist" id="artist"></p>
     <div class="meta"><span><b id="year"></b></span><span id="genre"></span><span>From 1001 Albums You Must Hear Before You Die</span></div>
     <p class="blurb" id="blurb"></p>
     <a class="listen" id="listen" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Listen on Spotify</a>
+    </div>
   </section>
   <section aria-labelledby="h">
     <h2 id="h">Every album of the week</h2>
     <div class="tablewrap"><table>
-      <thead><tr><th>Date</th><th>Artist</th><th>Album</th><th>Year</th><th>Link</th></tr></thead>
+      <thead><tr><th><span style="position:absolute;left:-9999px">Cover</span></th><th>Date</th><th>Artist</th><th>Album</th><th>Year</th><th>Link</th></tr></thead>
       <tbody id="hist"></tbody>
     </table></div>
   </section>
@@ -77,11 +86,16 @@ a:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
     document.getElementById('genre').textContent = a.genre;
     document.getElementById('blurb').textContent = a.blurb;
     document.getElementById('listen').href = a.url;
+    const cv = document.getElementById('cover');
+    if (a.art || a.art_sm) { cv.alt = a.album + ' by ' + a.artist + ', album cover'; cv.onerror = () => { if (a.art_sm && cv.src !== a.art_sm) cv.src = a.art_sm; else { cv.hidden = true; cv.parentNode.classList.add('noart'); } }; cv.src = a.art || a.art_sm; cv.hidden = false; } else document.querySelector('.hero').classList.add('noart');
     document.title = a.album + ' · Album of the week';
   }
   const tb = document.getElementById('hist');
   list.forEach((r, i) => {
     const tr = document.createElement('tr'); if (i === 0) tr.className = 'now';
+    const tdA = document.createElement('td'); tdA.className = 'art';
+    if (r.art_sm || r.art) { const im = document.createElement('img'); im.src = r.art_sm || r.art; im.alt = ''; im.loading = 'lazy'; im.onerror = () => im.remove(); tdA.append(im); }
+    tr.append(tdA);
     [fmt(r.date), r.artist, r.album, r.year].forEach((v, j) => { const td = document.createElement('td'); td.textContent = v; if (j === 3) td.className = 'num'; tr.append(td); });
     const td = document.createElement('td'); const l = document.createElement('a'); l.href = r.url; l.target = '_blank'; l.rel = 'noopener'; l.textContent = 'Spotify ↗'; td.append(l); tr.append(td);
     tb.append(tr);
